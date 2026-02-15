@@ -1,6 +1,7 @@
 # 🚀 Career Prep Frontend
 
 Frontend for the AI-powered Career Preparation Platform.
+https://github.com/buitai97/career-prep-backend
 
 ## Tech Stack
 
@@ -16,4 +17,4 @@ Frontend for the AI-powered Career Preparation Platform.
 
 ## Backend API
 
-https://your-backend.onrender.com
+https://techshop-backend-4g9y.onrender.com/
