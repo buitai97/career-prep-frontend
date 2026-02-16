@@ -13,7 +13,7 @@ https://github.com/buitai97/career-prep-backend
 
 ## Live Demo
 
-(Coming soon)
+https://career-prep-frontend.vercel.app/
 
 ## Backend API
 
