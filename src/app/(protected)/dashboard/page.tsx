@@ -15,7 +15,7 @@ export default function DashBoardPage() {
                 logout();
                 appRouter.push("/login");
             }}>Logout</Button>
-
+    
         </div>
 
     )
