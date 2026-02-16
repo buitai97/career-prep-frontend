@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { registerUser } from "@/app/(auth)/api";
 
@@ -37,11 +37,9 @@ export default function RegisterPage() {
         try {
             setServerError(null);
 
-            const res = await registerUser(data);
+            await registerUser(data);
 
-            console.log("Registration response:", res);
-
-            router.push("/dashboard");
+            router.push("/");
         } catch (error: any) {
             console.log("Full error:", error);
 
@@ -59,7 +57,6 @@ export default function RegisterPage() {
                         Create Account
                     </CardTitle>
                 </CardHeader>
-
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
@@ -114,6 +111,12 @@ export default function RegisterPage() {
                         >
                             {isSubmitting ? "Creating..." : "Register"}
                         </Button>
+                        <a
+                            href="/login"
+                            className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                        >
+                            Have an account?
+                        </a>
                     </form>
                 </CardContent>
             </Card>
