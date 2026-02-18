@@ -35,7 +35,7 @@ export default function LoginPage() {
         try {
             setServerError(null);
             await loginUser(data);
-            router.push("/");
+            router.push("/dashboard");
 
         } catch (error: any) {
             console.log(error.response?.data);

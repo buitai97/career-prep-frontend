@@ -14,9 +14,7 @@ export const registerUser = async (data: ICreateUser) => {
 }
 
 export const loginUser = async (data: ILoginUser) => {
-    console.log("Logging in with data:", data);
     const response = await api.post("/auth/login", data);
-    console.log("Login response:", response);
     return response.data;
 }
 
