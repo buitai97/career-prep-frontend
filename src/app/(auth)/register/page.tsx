@@ -36,13 +36,9 @@ export default function RegisterPage() {
     const onSubmit = async (data: RegisterFormData) => {
         try {
             setServerError(null);
-
             await registerUser(data);
-
             router.push("/dashboard");
         } catch (error: any) {
-            console.log("Full error:", error);
-
             setServerError(
                 error.response?.data?.message || "Something went wrong"
             );
