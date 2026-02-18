@@ -38,7 +38,6 @@ export default function LoginPage() {
             router.push("/dashboard");
 
         } catch (error: any) {
-            console.log(error.response?.data);
             setServerError(error.response?.data?.message || "Login failed");
         }
         setIsSubmitting(false);
@@ -97,7 +96,7 @@ export default function LoginPage() {
                             href="/register"
                             className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                         >
-                            Have an account?
+                            Create an account?
                         </a>
                     </form>
                 </CardContent>
