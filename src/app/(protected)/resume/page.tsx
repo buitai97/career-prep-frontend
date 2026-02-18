@@ -1,8 +1,8 @@
 "use client";
-export default function DashBoardPage() {
+export default function ResumePage() {
     return (
         <div>
-            Dashboard
+            Resume Page
         </div>
 
     )

@@ -39,7 +39,7 @@ export default function RegisterPage() {
 
             await registerUser(data);
 
-            router.push("/");
+            router.push("/dashboard");
         } catch (error: any) {
             console.log("Full error:", error);
 
