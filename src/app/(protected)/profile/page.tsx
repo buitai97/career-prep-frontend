@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Briefcase, Mail, Save, User2 } from "lucide-react";
 
 import { useAuth } from "@/app/(auth)/auth-context";
@@ -16,18 +16,146 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
+const PROFILE_PREFS_STORAGE_KEY = "career-prep.profile.preferences";
+
+type ProfilePrefs = {
+    targetRole: string;
+    experienceLevel: string;
+    bio: string;
+};
+
+const defaultProfilePrefs: ProfilePrefs = {
+    targetRole: "frontend-engineer",
+    experienceLevel: "entry-level",
+    bio: "",
+};
+
+const formatSlugLabel = (value: string) =>
+    value
+        .split("-")
+        .map((word) => word[0].toUpperCase() + word.slice(1))
+        .join(" ");
+
 export default function ProfilePage() {
-    const { user } = useAuth();
+    const { user, loading, updateProfile } = useAuth();
 
-    const [name, setName] = useState<string | undefined>(undefined);
-    const [email, setEmail] = useState<string | undefined>(undefined);
-    const [targetRole, setTargetRole] = useState("frontend-engineer");
-    const [experienceLevel, setExperienceLevel] = useState("entry-level");
-    const [bio, setBio] = useState("");
-    const [saved, setSaved] = useState(false);
+    const [initialized, setInitialized] = useState(false);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [targetRole, setTargetRole] = useState(defaultProfilePrefs.targetRole);
+    const [experienceLevel, setExperienceLevel] = useState(defaultProfilePrefs.experienceLevel);
+    const [bio, setBio] = useState(defaultProfilePrefs.bio);
+    const [initialSnapshot, setInitialSnapshot] = useState<null | {
+        name: string;
+        email: string;
+        targetRole: string;
+        experienceLevel: string;
+        bio: string;
+    }>(null);
+    const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const onSave = () => {
-        setSaved(true);
+    useEffect(() => {
+        if (loading || initialized) {
+            return;
+        }
+
+        let localPrefs = defaultProfilePrefs;
+        try {
+            const stored = window.localStorage.getItem(PROFILE_PREFS_STORAGE_KEY);
+            if (stored) {
+                localPrefs = { ...defaultProfilePrefs, ...(JSON.parse(stored) as Partial<ProfilePrefs>) };
+            }
+        } catch {
+            localPrefs = defaultProfilePrefs;
+        }
+
+        const nextState = {
+            name: user?.name ?? "",
+            email: user?.email ?? "",
+            targetRole: localPrefs.targetRole,
+            experienceLevel: localPrefs.experienceLevel,
+            bio: localPrefs.bio,
+        };
+
+        setName(nextState.name);
+        setEmail(nextState.email);
+        setTargetRole(nextState.targetRole);
+        setExperienceLevel(nextState.experienceLevel);
+        setBio(nextState.bio);
+        setInitialSnapshot(nextState);
+        setInitialized(true);
+    }, [initialized, loading, user]);
+
+    const isDirty = useMemo(() => {
+        if (!initialSnapshot) {
+            return false;
+        }
+
+        return (
+            name.trim() !== initialSnapshot.name ||
+            email.trim() !== initialSnapshot.email ||
+            targetRole !== initialSnapshot.targetRole ||
+            experienceLevel !== initialSnapshot.experienceLevel ||
+            bio.trim() !== initialSnapshot.bio
+        );
+    }, [bio, email, experienceLevel, initialSnapshot, name, targetRole]);
+
+    const onFieldChange = (update: () => void) => {
+        update();
+        if (saveStatus === "saved") {
+            setSaveStatus("idle");
+        }
+        if (errorMessage) {
+            setErrorMessage(null);
+        }
+    };
+
+    const onSave = async () => {
+        const trimmedName = name.trim();
+        const trimmedEmail = email.trim();
+
+        if (!trimmedName) {
+            setErrorMessage("Name is required.");
+            return;
+        }
+
+        if (!trimmedEmail) {
+            setErrorMessage("Email is required.");
+            return;
+        }
+
+        setSaveStatus("saving");
+        setErrorMessage(null);
+
+        try {
+            const updatedUser = await updateProfile({ name: trimmedName, email: trimmedEmail });
+            const profilePrefs: ProfilePrefs = {
+                targetRole,
+                experienceLevel,
+                bio: bio.trim(),
+            };
+
+            window.localStorage.setItem(PROFILE_PREFS_STORAGE_KEY, JSON.stringify(profilePrefs));
+
+            const nextSnapshot = {
+                name: updatedUser.name,
+                email: updatedUser.email,
+                targetRole: profilePrefs.targetRole,
+                experienceLevel: profilePrefs.experienceLevel,
+                bio: profilePrefs.bio,
+            };
+
+            setName(updatedUser.name);
+            setEmail(updatedUser.email);
+            setBio(profilePrefs.bio);
+            setInitialSnapshot(nextSnapshot);
+            setSaveStatus("saved");
+        } catch (error: any) {
+            const message = error?.response?.data?.message ?? "Unable to save profile changes.";
+            setSaveStatus("idle");
+            setErrorMessage(message);
+        }
     };
 
     return (
@@ -59,8 +187,8 @@ export default function ProfilePage() {
                                 <User2 className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     className="pl-9"
-                                    value={name ?? user?.name ?? ""}
-                                    onChange={(event) => setName(event.target.value)}
+                                    value={name}
+                                    onChange={(event) => onFieldChange(() => setName(event.target.value))}
                                     placeholder="Your full name"
                                 />
                             </div>
@@ -71,8 +199,9 @@ export default function ProfilePage() {
                                 <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     className="pl-9"
-                                    value={email ?? user?.email ?? ""}
-                                    onChange={(event) => setEmail(event.target.value)}
+                                    type="email"
+                                    value={email}
+                                    onChange={(event) => onFieldChange(() => setEmail(event.target.value))}
                                     placeholder="name@example.com"
                                 />
                             </div>
@@ -80,7 +209,7 @@ export default function ProfilePage() {
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Target role</label>
-                                <Select value={targetRole} onValueChange={setTargetRole}>
+                                <Select value={targetRole} onValueChange={(value) => onFieldChange(() => setTargetRole(value))}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Choose role" />
                                     </SelectTrigger>
@@ -94,7 +223,10 @@ export default function ProfilePage() {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Experience level</label>
-                                <Select value={experienceLevel} onValueChange={setExperienceLevel}>
+                                <Select
+                                    value={experienceLevel}
+                                    onValueChange={(value) => onFieldChange(() => setExperienceLevel(value))}
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Choose level" />
                                     </SelectTrigger>
@@ -112,19 +244,19 @@ export default function ProfilePage() {
                             <Textarea
                                 value={bio}
                                 onChange={(event) => {
-                                    setBio(event.target.value);
-                                    if (saved) setSaved(false);
+                                    onFieldChange(() => setBio(event.target.value));
                                 }}
                                 placeholder="Write 3-5 lines about your strengths, goals, and recent achievements."
                                 className="min-h-28"
                             />
                         </div>
                         <div className="flex items-center gap-3">
-                            <Button onClick={onSave}>
+                            <Button onClick={onSave} disabled={!initialized || !isDirty || saveStatus === "saving"}>
                                 <Save className="h-4 w-4" />
-                                Save Profile
+                                {saveStatus === "saving" ? "Saving..." : "Save Profile"}
                             </Button>
-                            {saved && <p className="text-sm text-emerald-600">Profile changes saved.</p>}
+                            {saveStatus === "saved" && <p className="text-sm text-emerald-600">Profile changes saved.</p>}
+                            {errorMessage && <p className="text-sm text-destructive">{errorMessage}</p>}
                         </div>
                     </CardContent>
                 </Card>
@@ -139,11 +271,11 @@ export default function ProfilePage() {
                                 <Briefcase className="h-4 w-4 text-amber-600" />
                                 Focus
                             </span>
-                            {targetRole.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ")}
+                            {formatSlugLabel(targetRole)}
                         </p>
                         <p className="rounded-md border p-3">
                             <span className="mb-1 block font-medium text-foreground">Level</span>
-                            {experienceLevel.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ")}
+                            {formatSlugLabel(experienceLevel)}
                         </p>
                         <p className="rounded-md border p-3">
                             <span className="mb-1 block font-medium text-foreground">Bio status</span>
