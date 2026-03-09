@@ -73,7 +73,7 @@ jobs:
           username: ${{ env.DEPLOY_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           source: "deploy.tar.gz"
-          target: ${{ env.DEPLOY_DIR }}
+          target: "/tmp"
 
       - name: Deploy on server
         uses: appleboy/ssh-action@v1.0.3
@@ -84,6 +84,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             set -e
+            mkdir -p "${{ env.DEPLOY_DIR }}"
+            mv /tmp/deploy.tar.gz "${{ env.DEPLOY_DIR }}/deploy.tar.gz"
             cd "${{ env.DEPLOY_DIR }}"
             tar -xzf deploy.tar.gz
             rm deploy.tar.gz
