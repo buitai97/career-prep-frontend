@@ -178,8 +178,8 @@ export default function InterviewPage() {
     };
 
     return (
-        <div className="space-y-6 p-4 md:p-6">
-            <section className="rounded-2xl border bg-gradient-to-r from-sky-50 to-cyan-50 p-5">
+        <div className="mx-auto w-full max-w-7xl space-y-5 px-4 py-4 md:px-6 md:py-5">
+            <section className="rounded-2xl border bg-gradient-to-r from-sky-50 to-cyan-50 p-4 md:p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="space-y-2">
                         <p className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-800">
@@ -197,7 +197,7 @@ export default function InterviewPage() {
                 </div>
             </section>
 
-            <section className="grid gap-4 lg:grid-cols-[360px_1fr]">
+            <section className="grid gap-3 lg:grid-cols-[340px_1fr]">
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">Session Setup</CardTitle>
@@ -257,18 +257,56 @@ export default function InterviewPage() {
                     </CardContent>
                 </Card>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {!sessionStarted ? (
-                        <Card className="h-full">
+                        <Card>
                             <CardHeader>
                                 <CardTitle className="text-base">Interview Session</CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-3 text-sm text-muted-foreground">
-                                <p>
-                                    Complete setup and click <span className="font-medium text-foreground">Start Session</span> to generate interview questions.
-                                </p>
-                                {success ? <p className="text-emerald-600">{success}</p> : null}
-                                {error ? <p className="text-red-600">{error}</p> : null}
+                            <CardContent className="space-y-5 text-sm">
+                                {success ? (
+                                    <p className="rounded-md bg-emerald-50 px-3 py-2 text-emerald-700">{success}</p>
+                                ) : null}
+                                {error ? (
+                                    <p className="rounded-md bg-red-50 px-3 py-2 text-red-700">{error}</p>
+                                ) : null}
+                                <div className="grid gap-3 sm:grid-cols-3">
+                                    <div className="rounded-xl border bg-sky-50 p-4 text-center">
+                                        <p className="text-2xl font-semibold text-sky-700">5</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">Questions per session</p>
+                                    </div>
+                                    <div className="rounded-xl border bg-emerald-50 p-4 text-center">
+                                        <p className="text-2xl font-semibold text-emerald-700">AI</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">Powered feedback</p>
+                                    </div>
+                                    <div className="rounded-xl border bg-violet-50 p-4 text-center">
+                                        <p className="text-2xl font-semibold text-violet-700">STAR</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">Structured format</p>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="font-medium text-foreground">How it works</p>
+                                    <ol className="space-y-2 text-muted-foreground">
+                                        {[
+                                            "Select your target role, company, and interview type on the left.",
+                                            "Click Start Session — AI generates a set of tailored questions.",
+                                            "Answer each question using the STAR method (Situation, Task, Action, Result).",
+                                            "Submit to receive a score and automatically move to the next question.",
+                                            "Review your performance in the analytics snapshot below.",
+                                        ].map((step, i) => (
+                                            <li key={step} className="flex items-start gap-3 rounded-md border p-3">
+                                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-100 text-xs font-semibold text-sky-700">
+                                                    {i + 1}
+                                                </span>
+                                                {step}
+                                            </li>
+                                        ))}
+                                    </ol>
+                                </div>
+                                <div className="rounded-xl border bg-muted/30 p-4">
+                                    <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Sample question</p>
+                                    <p className="text-foreground">Tell me about a time you had to deliver a project under a tight deadline. What was your approach and what was the outcome?</p>
+                                </div>
                             </CardContent>
                         </Card>
                     ) : (
@@ -333,7 +371,7 @@ export default function InterviewPage() {
                 </div>
             </section>
 
-            <section className="grid gap-4 lg:grid-cols-3">
+            <section className="grid gap-3 lg:grid-cols-3">
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">Coaching Tips</CardTitle>
@@ -353,23 +391,61 @@ export default function InterviewPage() {
                     <CardHeader>
                         <CardTitle className="text-base">Performance Snapshot</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-3 text-sm">
-                        <div className="flex items-center justify-between rounded-md border p-3">
-                            <span>Completed sessions</span>
-                            <span className="font-semibold text-emerald-600">
-                                {loadingAnalytics ? "..." : analytics.completedSessions}
-                            </span>
+                    <CardContent className="space-y-4 text-sm">
+                        <div className="grid grid-cols-3 gap-2 text-center">
+                            <div className="rounded-xl border bg-emerald-50 py-3">
+                                <p className="text-xl font-semibold text-emerald-700">
+                                    {loadingAnalytics ? "\u2013" : analytics.completedSessions}
+                                </p>
+                                <p className="text-xs text-muted-foreground">Sessions</p>
+                            </div>
+                            <div className="rounded-xl border bg-sky-50 py-3">
+                                <p className="text-xl font-semibold text-sky-700">
+                                    {loadingAnalytics ? "\u2013" : analytics.bestScore.toFixed(0)}
+                                </p>
+                                <p className="text-xs text-muted-foreground">Best score</p>
+                            </div>
+                            <div className="rounded-xl border bg-amber-50 py-3">
+                                <p className="text-xl font-semibold text-amber-700">
+                                    {loadingAnalytics ? "\u2013" : analytics.averageScore.toFixed(1)}
+                                </p>
+                                <p className="text-xs text-muted-foreground">Avg score</p>
+                            </div>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="space-y-1">
+                                <div className="flex justify-between text-xs">
+                                    <span className="text-muted-foreground">Average score</span>
+                                    <span className="font-medium">
+                                        {loadingAnalytics ? "\u2013" : `${analytics.averageScore.toFixed(0)}%`}
+                                    </span>
+                                </div>
+                                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                                    <div
+                                        className="h-full rounded-full bg-amber-500 transition-all"
+                                        style={{ width: loadingAnalytics ? "0%" : `${Math.min(analytics.averageScore, 100)}%` }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <div className="flex justify-between text-xs">
+                                    <span className="text-muted-foreground">Best score</span>
+                                    <span className="font-medium">
+                                        {loadingAnalytics ? "\u2013" : `${analytics.bestScore.toFixed(0)}%`}
+                                    </span>
+                                </div>
+                                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                                    <div
+                                        className="h-full rounded-full bg-sky-500 transition-all"
+                                        style={{ width: loadingAnalytics ? "0%" : `${Math.min(analytics.bestScore, 100)}%` }}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="flex items-center justify-between rounded-md border p-3">
-                            <span>Average score</span>
-                            <span className="font-semibold text-amber-600">
-                                {loadingAnalytics ? "..." : analytics.averageScore.toFixed(1)}
-                            </span>
-                        </div>
-                        <div className="flex items-center justify-between rounded-md border p-3">
-                            <span>Best score</span>
-                            <span className="font-semibold text-sky-600">
-                                {loadingAnalytics ? "..." : analytics.bestScore.toFixed(1)}
+                            <span className="text-muted-foreground">Total sessions</span>
+                            <span className="font-semibold">
+                                {loadingAnalytics ? "..." : analytics.totalSessions}
                             </span>
                         </div>
                     </CardContent>

@@ -137,8 +137,8 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className="space-y-6 p-4 md:p-6">
-            <section className="rounded-2xl border bg-gradient-to-r from-amber-50 to-rose-50 p-5">
+        <div className="mx-auto w-full max-w-7xl space-y-5 px-4 py-4 md:px-6 md:py-5">
+            <section className="rounded-2xl border bg-gradient-to-r from-amber-50 to-rose-50 p-4 md:p-5">
                 <div className="space-y-2">
                     <p className="text-xs font-medium uppercase tracking-wide text-amber-700">
                         Profile Settings
@@ -153,7 +153,7 @@ export default function ProfilePage() {
                 </div>
             </section>
 
-            <section className="grid gap-4 lg:grid-cols-[1fr_320px]">
+            <section className="grid gap-3 lg:grid-cols-[1fr_320px]">
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">Basic Information</CardTitle>
@@ -239,28 +239,65 @@ export default function ProfilePage() {
                     </CardContent>
                 </Card>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-base">Profile Summary</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3 text-sm text-muted-foreground">
-                        <p className="rounded-md border p-3">
-                            <span className="mb-1 flex items-center gap-2 font-medium text-foreground">
-                                <Briefcase className="h-4 w-4 text-amber-600" />
-                                Focus
-                            </span>
-                            {formatSlugLabel(targetRole)}
-                        </p>
-                        <p className="rounded-md border p-3">
-                            <span className="mb-1 block font-medium text-foreground">Level</span>
-                            {formatSlugLabel(experienceLevel)}
-                        </p>
-                        <p className="rounded-md border p-3">
-                            <span className="mb-1 block font-medium text-foreground">Bio status</span>
-                            {bio.trim() ? "Complete" : "Add a short bio to improve recommendations"}
-                        </p>
-                    </CardContent>
-                </Card>
+                <div className="space-y-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base">Profile Summary</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3 text-sm">
+                            <div className="rounded-md border p-3">
+                                <p className="mb-1 flex items-center gap-2 font-medium">
+                                    <Briefcase className="h-4 w-4 text-amber-600" />
+                                    Focus
+                                </p>
+                                <p className="text-muted-foreground">{formatSlugLabel(targetRole)}</p>
+                            </div>
+                            <div className="rounded-md border p-3">
+                                <p className="mb-1 font-medium">Experience Level</p>
+                                <p className="text-muted-foreground">{formatSlugLabel(experienceLevel)}</p>
+                            </div>
+                            <div className="rounded-md border p-3">
+                                <p className="mb-1 font-medium">Bio status</p>
+                                <p className={bio.trim() ? "text-emerald-600" : "text-muted-foreground"}>
+                                    {bio.trim() ? "\u2713 Complete" : "Add a short bio to improve recommendations"}
+                                </p>
+                            </div>
+                            <div className="rounded-md border p-3">
+                                <p className="mb-2 font-medium">Profile completion</p>
+                                <div className="space-y-1">
+                                    <div className="flex justify-between text-xs text-muted-foreground">
+                                        <span>Overall</span>
+                                        <span className="font-medium text-foreground">{bio.trim() ? "100%" : "75%"}</span>
+                                    </div>
+                                    <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                                        <div
+                                            className="h-full rounded-full bg-amber-500 transition-all"
+                                            style={{ width: bio.trim() ? "100%" : "75%" }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base">Prep Tips</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2 text-sm text-muted-foreground">
+                            {[
+                                "Keep your target role specific to get better AI suggestions.",
+                                "Set your experience level accurately for realistic interview scoring.",
+                                "A complete bio improves resume and interview personalization.",
+                            ].map((tip) => (
+                                <p key={tip} className="flex items-start gap-2 rounded-md border p-3">
+                                    <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-amber-400" />
+                                    {tip}
+                                </p>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </div>
             </section>
         </div>
     );

@@ -276,8 +276,8 @@ export default function ResumePage() {
     };
 
     return (
-        <div className="space-y-6 p-4 md:p-6">
-            <section className="rounded-2xl border bg-gradient-to-r from-emerald-50 to-sky-50 p-5">
+        <div className="mx-auto w-full max-w-7xl space-y-5 px-4 py-4 md:px-6 md:py-5">
+            <section className="rounded-2xl border bg-gradient-to-r from-emerald-50 to-sky-50 p-4 md:p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="space-y-2">
                         <p className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
@@ -310,7 +310,7 @@ export default function ResumePage() {
                 {errorMessage ? <p className="mt-3 text-sm text-destructive">{errorMessage}</p> : null}
             </section>
 
-            <section className="grid gap-4 lg:grid-cols-[380px_1fr]">
+            <section className="grid gap-3 lg:grid-cols-[360px_1fr]">
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">Resume Setup</CardTitle>
@@ -368,7 +368,7 @@ export default function ResumePage() {
                     </CardContent>
                 </Card>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <Card>
                         <CardHeader>
                             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -415,23 +415,44 @@ export default function ResumePage() {
                 </div>
             </section>
 
-            <section className="grid gap-4 lg:grid-cols-3">
+            <section className="grid gap-3 lg:grid-cols-3">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-base">ATS Match</CardTitle>
+                        <div className="flex items-center justify-between">
+                            <CardTitle className="text-base">ATS Match</CardTitle>
+                            <span className="text-2xl font-semibold text-emerald-600">82%</span>
+                        </div>
                     </CardHeader>
-                    <CardContent className="space-y-3 text-sm">
-                        <div className="flex items-center justify-between rounded-md border p-3">
-                            <span>Keyword coverage</span>
-                            <span className="font-semibold text-amber-600">76%</span>
+                    <CardContent className="space-y-4 text-sm">
+                        <div className="space-y-1">
+                            <div className="flex justify-between text-xs">
+                                <span className="text-muted-foreground">Keyword coverage</span>
+                                <span className="font-medium text-amber-600">76%</span>
+                            </div>
+                            <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                                <div className="h-full w-[76%] rounded-full bg-amber-500" />
+                            </div>
                         </div>
-                        <div className="flex items-center justify-between rounded-md border p-3">
-                            <span>Section completeness</span>
-                            <span className="font-semibold text-emerald-600">88%</span>
+                        <div className="space-y-1">
+                            <div className="flex justify-between text-xs">
+                                <span className="text-muted-foreground">Section completeness</span>
+                                <span className="font-medium text-emerald-600">88%</span>
+                            </div>
+                            <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                                <div className="h-full w-[88%] rounded-full bg-emerald-500" />
+                            </div>
                         </div>
-                        <div className="flex items-center justify-between rounded-md border p-3">
-                            <span>Formatting quality</span>
-                            <span className="font-semibold text-sky-600">81%</span>
+                        <div className="space-y-1">
+                            <div className="flex justify-between text-xs">
+                                <span className="text-muted-foreground">Formatting quality</span>
+                                <span className="font-medium text-sky-600">81%</span>
+                            </div>
+                            <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                                <div className="h-full w-[81%] rounded-full bg-sky-500" />
+                            </div>
+                        </div>
+                        <div className="rounded-md border bg-muted/30 p-3 text-xs text-muted-foreground">
+                            💡 Add 2–3 more role-specific keywords to push coverage above 85%.
                         </div>
                     </CardContent>
                 </Card>
