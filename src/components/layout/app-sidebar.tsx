@@ -34,11 +34,15 @@ export default function AppSidebar() {
         router.push("/login");
     }
     return (
-        <Sidebar side="left" collapsible="icon" >
+        <Sidebar side="left" collapsible="icon" variant="inset">
             <SidebarContent>
-                <SidebarHeader>
-                    <div className="flex items-center justify-center">
-                        <Image src="/logo.png" alt="Logo" width={32} height={32} />
+                <SidebarHeader className="border-b">
+                    <div className="flex items-center gap-2 px-1 py-1">
+                        <Image src="/logo.png" alt="Logo" width={28} height={28} />
+                        <div className="group-data-[collapsible=icon]:hidden">
+                            <p className="text-sm font-semibold">Career Prep</p>
+                            <p className="text-xs text-muted-foreground">Interview workspace</p>
+                        </div>
                     </div>
                 </SidebarHeader>
                 <SidebarGroup>
