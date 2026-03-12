@@ -193,10 +193,10 @@ export default function InterviewPage() {
 
     return (
         <div className="mx-auto w-full max-w-7xl space-y-5 px-4 py-4 md:px-6 md:py-5">
-            <section className="rounded-2xl border bg-gradient-to-r from-sky-50 to-cyan-50 p-4 md:p-5">
+            <section className="rounded-2xl border bg-muted/40 p-4 md:p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="space-y-2">
-                        <p className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-800">
+                        <p className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-800 dark:border dark:border-sky-800/60 dark:bg-sky-900/40 dark:text-sky-200">
                             <Sparkles className="h-3.5 w-3.5" />
                             AI Interview Coach
                         </p>
